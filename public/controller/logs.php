@@ -9,9 +9,9 @@ $app->post('/logs/list', function ($request, $response, $args) {
 		    $res[] = $result->to_array();
 		}
 		if ($res) {
-			$object = array('result'=>$res, 'message'=>'success');
+			$object = array('result'=>$res, 'message'=>'List Successfully Retrieved');
 		}else{
-			$object = array('result'=>array(), 'message'=>'no record');
+			$object = array('result'=>array(), 'message'=>'No Record found');
 		}
 	}else{
 		$object = array('result'=>array(), 'message'=>'access token not valid');
