@@ -8,21 +8,16 @@ if (PHP_SAPI == 'cli-server') {
         return false;
     }
 }
-
+header("Content-Type: application/json");
 require __DIR__ . '/../vendor/autoload.php';
 require_once 'php-activerecord/ActiveRecord.php';
 session_start();
-header("Content-Type: application/json");
+
 //initialize mysql
-ActiveRecord\Config::initialize(function($cfg){
-   $cfg->set_model_directory(__DIR__ . '/model');
-   $cfg->set_connections(array('development' =>
-     'mysql://root:@localhost/attendance'));
-});
+require __DIR__ . '/../src/active_record_settings.php';
 // Instantiate the app
 $settings = require __DIR__ . '/../src/settings.php';
-$app = new \Slim\App($settings);
-
+$app = new \Slim\App($settings); 
 // Set up dependencies
 require __DIR__ . '/../src/dependencies.php';
 
@@ -34,18 +29,7 @@ require __DIR__ . '/../src/routes.php';
   
 
 //Error handler, Slim 3 doesnt have this and returns html that makes the app crash
-$c = $app->getContainer();
-$c['errorHandler'] = function ($c) {
-  return function ($request, $response, $exception) use ($c) {
-    $data = [ 
-      'message' => $exception->getMessage()
-    ];
- 
-    return $c->get('response')->withStatus(500)
-             ->withHeader('Content-Type', 'application/json')
-             ->write(json_encode($data));
-  };
-};
+require __DIR__ . '/../src/error_handler.php';
 
 // Run app 
 $app->run();
