@@ -29,15 +29,20 @@ $app->post('/user/update/{id}', function ($request, $response, $args) {
 $app->post('/user/login/{id}', function ($request, $response, $args) {     
 	$updateUserToken = User::find($args['id']);  
 	$updateUserToken->token = $args['id'].uniqid();
-	if ($request->getParsedBody()['username'] == $updateUserToken->username && $request->getParsedBody()['code'] == $updateUserToken->code) {
-		if($updateUserToken->save()){
-			$returnValue = array('token'=>$updateUserToken->token,'message'=>'success','status'=>200);
+	if ($updateUserToken != null) {
+		if ($request->getParsedBody()['username'] == $updateUserToken->username && $request->getParsedBody()['code'] == $updateUserToken->code) {
+			if($updateUserToken->save()){
+				$returnValue = array('token'=>$updateUserToken->token,'message'=>'success','status'=>200);
+			}else{
+				$returnValue = array('message'=>'failed','status'=>403);
+			}
 		}else{
 			$returnValue = array('message'=>'failed','status'=>403);
-		}
+		} 	
 	}else{
 		$returnValue = array('message'=>'failed','status'=>403);
-	} 
+	}
+	
 	return json_encode($returnValue);
 });
 

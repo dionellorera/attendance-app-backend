@@ -1,6 +1,7 @@
 <?php
 
 $app->post('/logs/list', function ($request, $response, $args) {     
+	$res = array();
 	$userRecord = User::verifyToken($request->getParsedBody()['token']); 
 	if ($userRecord['isValid']) {
 		$conditions = array('conditions' => array("user_id = ?", $userRecord['result']->id));
